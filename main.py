@@ -3,6 +3,7 @@ import math
 from tkinter import ttk
 import os
 
+
 def winconfig():
     principal.title("Ficha Python")
     principal.geometry("1280x720+200+100")
@@ -58,6 +59,7 @@ def boton():
 
     f.writelines("%s\n" % item for item in ListaGuardar)
     f.close()
+
 
 principal = tk.Tk()
 winconfig()
@@ -223,7 +225,7 @@ BotonTk = tk.Button(text="EL BOTÓN", command=boton).grid(row=8, column=5)
 #     StatsBase.append(int(input("Inserta estadística ")))
 #     StatsTotal.append(math.floor((StatsBase[i] - 10) / 2))
 
-#VidaTotal = int(DadoGolpeTk.get()) + StatsTotal[2]
+# VidaTotal = int(DadoGolpeTk.get()) + StatsTotal[2]
 # Iniciativa = StatsTotal[1]
 # CA = 10 + StatsTotal[1]
 # CAToq = 10 + StatsTotal[1]
