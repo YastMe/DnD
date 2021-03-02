@@ -61,6 +61,15 @@ def boton():
     f.close()
 
 
+def seleccionarRangos():
+    for i in range(0, 48):
+        if ListaRangosAsignados[i].get():
+            ListaRangos[i].append(True)
+        else:
+            ListaRangos[i].append(False)
+        del ListaRangos[i][3]
+
+
 principal = tk.Tk()
 winconfig()
 
@@ -219,7 +228,35 @@ TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe").grid(row=5, column=6)
 EntradaDadoGolpe = ttk.Entry(principal)
 EntradaDadoGolpe.grid(row=6, column=6)
 
-BotonTk = tk.Button(text="EL BOTÓN", command=boton).grid(row=8, column=5)
+ListaRangosAsignados = []
+
+container = tk.ttk.Frame(principal)
+canvas = tk.Canvas(container)
+scrollbar = tk.ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+scrollable_frame = tk.ttk.Frame(canvas)
+
+scrollable_frame.bind(
+    "<Configure>",
+    lambda e: canvas.configure(
+        scrollregion=canvas.bbox("all")
+    )
+)
+
+canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+canvas.configure(yscrollcommand=scrollbar.set)
+
+for i in range(0, 48):
+    ListaRangosAsignados.append(tk.IntVar())
+    tk.ttk.Checkbutton(scrollable_frame, text=ListaRangos[i][0], variable=ListaRangosAsignados[i], onvalue=1,
+                       offvalue=0).pack()
+
+container.place(x=0, y=180)
+canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
+
+BotonRangosTk = tk.Button(container, text="Rangos", command=seleccionarRangos).pack(side="bottom")
+
+BotonTk = tk.Button(principal, text="EL BOTÓN", command=boton).grid(row=8, column=5)
 
 # for i in range(0, 6):
 #     StatsBase.append(int(input("Inserta estadística ")))
@@ -257,5 +294,7 @@ BotonTk = tk.Button(text="EL BOTÓN", command=boton).grid(row=8, column=5)
 #     BaB = int(Lv.get() / 2)
 
 principal.mainloop()
+
+print(ListaRangos)
 
 # PREPARASIÓN ACABÁ
