@@ -10,14 +10,15 @@ def gestionar_pulsacion_raton(event):
     print("Se ha pulsado el ratón en la posición x: {} y:{}".format(event.x, event.y))
 
 
-def winconfig():
-    principal.title("Ficha Python")
-    principal.geometry("860x345+200+100")
-    principal.resizable(width="False", height="False")
-    principal.configure(background='lightgrey')
-    principal.bind("<Button-1>", gestionar_pulsacion_raton)
+def winconfig(ventana, nombre, dimensiones, resize):
+    ventana.title(nombre)
+    ventana.geometry(dimensiones)
+    ventana.resizable(width=resize, height=resize)
+    ventana.configure(background='lightgrey')
+    ventana.bind("<Button-1>", gestionar_pulsacion_raton)
 
-def botonSeguro():
+
+def botonAceptar():
     global ListaTk
 
     f_list = os.listdir("./")
@@ -27,23 +28,35 @@ def botonSeguro():
     else:
         e = open("Jugador.txt", "w", encoding="utf-8")
 
+    e.write("%s\n" % DadoGolpeTk.get())
+
     for c in range(0, len(ListaTk)):
         if (c % 2) == 0:
             ListaTk[c].set(ListaTk[c + 1].get())
             e.write(ListaTk[c].get() + "\n")
 
     e.close()
+
+    rangFile = open("Rangos.txt", "w", encoding="utf-8")
+
     for n in range(0, 47):
         if ListaRangosAsignados[n].get():
             ListaRangos[n].append(True)
         else:
             ListaRangos[n].append(False)
         ListaRangos[n][3] = 0
+        rangFile.writelines(
+            ListaRangos[n][0] + ',' + ListaRangos[n][1] + ',' + ListaRangos[n][2] + ',' + str(ListaRangos[n][3]) + ',' +
+            str(ListaRangos[n][4]) + "\n")
 
+    rangFile.close()
     principal.destroy()
+    # open("Abrido.txt", "w", encoding="utf-8").write("1")
+
 
 def botonCancelar():
     comprobacion.destroy()
+
 
 def boton():
     global comprobacion
@@ -55,12 +68,18 @@ def boton():
     comprobacion.resizable(width="False", height="False")
 
     tk.Label(comprobacion, text="¿Segure que quieres guardar los cambios así?").pack(side="top")
-    tk.Button(comprobacion, text="Sí", command=botonSeguro).place(x=25, y=30, width=95)
+    tk.Button(comprobacion, text="Sí", command=botonAceptar).place(x=25, y=30, width=95)
     tk.Button(comprobacion, text="No", command=botonCancelar).place(x=130, y=30, width=95)
 
 
 def scroll(event):
     canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+def callback(selection):
+    global DadoGolpeTk
+    print(selection)
+    DadoGolpeTk.set(selection)
+    print(DadoGolpeTk.get())
 
 
 Abrido = open("Abrido.txt", "r", encoding="utf-8")
@@ -69,7 +88,7 @@ if Abrido.readline() == "0":
     Abrido.close()
 
     principal = tk.Tk()
-    winconfig()
+    winconfig(principal, nombre="Ficha Python", dimensiones="860x345+200+100", resize="False")
     principal.bind("<MouseWheel>", scroll)
 
     StatsBase = []
@@ -176,15 +195,6 @@ if Abrido.readline() == "0":
     EntradaEXPH = ttk.Entry(principal)
     # EntradaEXPH.place(x=10, y=190, width=50)
 
-    BaBTk = tk.StringVar()
-    BaBTk.set("Malo")
-    RefTk = tk.StringVar()
-    RefTk.set("Bueno")
-    FortTk = tk.StringVar()
-    FortTk.set("Bueno")
-    VolTk = tk.StringVar()
-    VolTk.set("Bueno")
-
     VidaTk = tk.StringVar()
     TextoVida = tk.Label(principal, text="Vida", anchor='w', relief="groove").place(x=10, y=211, width=145)
     EntradaVida = ttk.Entry(principal)
@@ -195,10 +205,6 @@ if Abrido.readline() == "0":
     EntradaRangos = ttk.Entry(principal)
     EntradaRangos.place(x=165, y=190, width=145)
 
-    CATk = tk.StringVar()
-    CAToqTk = tk.StringVar()
-    CADesTk = tk.StringVar()
-
     VelTk = tk.StringVar()
     TextoVel = tk.Label(principal, text="Velocidad", anchor='w', relief="groove").place(x=320, y=211, width=145)
     EntradaVel = ttk.Entry(principal)
@@ -208,7 +214,13 @@ if Abrido.readline() == "0":
     TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe", anchor='w', relief="groove").place(x=475, y=211,
                                                                                                   width=145)
     EntradaDadoGolpe = ttk.Entry(principal)
-    EntradaDadoGolpe.place(x=475, y=190, width=145)
+    # EntradaDadoGolpe.place(x=475, y=190, width=145)
+
+    ListaDados = []
+    DadoGolpeTk.set("1d4")
+    opt = tk.OptionMenu(principal, DadoGolpeTk, "1d4", "1d6", "1d8", "1d10", "1d12", command=callback)
+    opt.configure(width=145)
+    opt.place(x=475, y=190, width=145)
 
     CobreTk = tk.StringVar()
     TextoCobre = tk.Label(principal, text="Cobre", anchor='w', relief="groove").place(x=10, y=271, width=145)
@@ -230,13 +242,24 @@ if Abrido.readline() == "0":
     EntradaPlatino = ttk.Entry(principal)
     EntradaPlatino.place(x=475, y=250, width=145)
 
+    BaBTk = tk.StringVar()
+    BaBTk.set("Malo")
+    RefTk = tk.StringVar()
+    RefTk.set("Bueno")
+    FortTk = tk.StringVar()
+    FortTk.set("Bueno")
+    VolTk = tk.StringVar()
+    VolTk.set("Bueno")
+    CATk = tk.StringVar()
+    CAToqTk = tk.StringVar()
+    CADesTk = tk.StringVar()
+
     ListaTk = [NombreTk, EntradaNombre, JugadorTk, EntradaJugador, ClaseTk, EntradaClase, Lv, EntradaLv, RazaTk,
                EntradaRaza, AlineamientoTk, EntradaAlineamiento, DeidadTk, EntradaDeidad, TamanioTk, EntradaTamanio,
-               EdadTk,
-               EntradaEdad, SexoTk, EntradaSexo, AlturaTk, EntradaAltura, PesoTk, EntradaPeso, OjosTk, EntradaOjos,
-               CabelloTk, EntradaCabello, PielTk, EntradaPiel, EXPHTk, EntradaEXPH, CobreTk, EntradaCobre, PlataTk,
-               EntradaPlata, OroTk, EntradaOro, PlatinoTk, EntradaPlatino, RangosTk, EntradaRangos, VidaTk, EntradaVida,
-               VelTk, EntradaVel, DadoGolpeTk, EntradaDadoGolpe]
+               EdadTk, EntradaEdad, SexoTk, EntradaSexo, AlturaTk, EntradaAltura, PesoTk, EntradaPeso, OjosTk,
+               EntradaOjos, CabelloTk, EntradaCabello, PielTk, EntradaPiel, VidaTk, EntradaVida, RangosTk,
+               EntradaRangos, VelTk, EntradaVel, CobreTk, EntradaCobre, PlataTk,
+               EntradaPlata, OroTk, EntradaOro, PlatinoTk, EntradaPlatino]
 
     ListaRangosAsignados = []
 
@@ -311,5 +334,27 @@ if Abrido.readline() == "0":
     # f.close()
 
     # PREPARASIÓN ACABÁ
-else:
-    Abrido.close()
+
+#############################################################################
+
+# Aquí comiensa la programasión del de verdá
+
+# fichaWin = tk.Tk()
+# winconfig(fichaWin, nombre="Ficha 3.5", dimensiones="1280x720+200+100", resize="True")
+#
+# StatsFile = open("Jugador.txt", "r", encoding="utf-8")
+#
+# StatsFile.close()
+#
+# NombreEntry = tk.Entry(fichaWin)
+# NombreEntry.place(x=10, y=10, width=100)
+# NombreEntry.set(ListaTk)
+# NombreDefLabel = tk.Label(fichaWin, text="Nombre", anchor='w', relief="groove")
+# NombreDefLabel.place(x=10, y=31, width=100)
+#
+# JugadorEntry = tk.Entry(fichaWin)
+# NombreEntry.place(x=10, y=10, width=100)
+# NombreDefLabel = tk.Label(fichaWin, text="Nombre", anchor='w', relief="groove")
+# NombreDefLabel.place(x=10, y=31, width=100)
+#
+# fichaWin.mainloop()
