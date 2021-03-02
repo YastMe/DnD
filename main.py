@@ -153,6 +153,39 @@ TextoEXPH = tk.Label(principal, text="EXPH", anchor='w', relief="groove")#.place
 EntradaEXPH = ttk.Entry(principal)
 # EntradaEXPH.place(x=10, y=190, width=50)
 
+BaBTk = tk.StringVar()
+BaBTk.set("Malo")
+RefTk = tk.StringVar()
+RefTk.set("Bueno")
+FortTk = tk.StringVar()
+FortTk.set("Bueno")
+VolTk = tk.StringVar()
+VolTk.set("Bueno")
+
+VidaTk = tk.StringVar()
+TextoVida = tk.Label(principal, text="Vida", anchor='w', relief="groove").place(x=10, y=211, width=145)
+EntradaVida = ttk.Entry(principal)
+EntradaVida.place(x=10, y=190, width=145)
+
+RangosTk = tk.StringVar()
+TextoRangos = tk.Label(principal, text="Rangos", anchor='w', relief="groove").place(x=165, y=211, width=145)
+EntradaRangos = ttk.Entry(principal)
+EntradaRangos.place(x=165, y=190, width=145)
+
+CATk = tk.StringVar()
+CAToqTk = tk.StringVar()
+CADesTk = tk.StringVar()
+
+VelTk = tk.StringVar()
+TextoVel = tk.Label(principal, text="Velocidad", anchor='w', relief="groove").place(x=320, y=211, width=145)
+EntradaVel = ttk.Entry(principal)
+EntradaVel.place(x=320, y=190, width=145)
+
+DadoGolpeTk = tk.StringVar()
+TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe", anchor='w', relief="groove").place(x=475, y=211, width=145)
+EntradaDadoGolpe = ttk.Entry(principal)
+EntradaDadoGolpe.place(x=475, y=190, width=145)
+
 CobreTk = tk.StringVar()
 TextoCobre = tk.Label(principal, text="Cobre", anchor='w', relief="groove").place(x=10, y=271, width=145)
 EntradaCobre = ttk.Entry(principal)
@@ -172,39 +205,6 @@ PlatinoTk = tk.StringVar()
 TextoPlatino = tk.Label(principal, text="Platino", anchor='w', relief="groove").place(x=475, y=271, width=145)
 EntradaPlatino = ttk.Entry(principal)
 EntradaPlatino.place(x=475, y=250, width=145)
-
-BaBTk = tk.StringVar()
-BaBTk.set("Malo")
-RefTk = tk.StringVar()
-RefTk.set("Bueno")
-FortTk = tk.StringVar()
-FortTk.set("Bueno")
-VolTk = tk.StringVar()
-VolTk.set("Bueno")
-
-RangosTk = tk.StringVar()
-TextoRangos = tk.Label(principal, text="Rangos", anchor='w', relief="groove").place(x=165, y=211, width=145)
-EntradaRangos = ttk.Entry(principal)
-EntradaRangos.place(x=165, y=190, width=145)
-
-VidaTk = tk.StringVar()
-TextoVida = tk.Label(principal, text="Vida", anchor='w', relief="groove").place(x=10, y=211, width=145)
-EntradaVida = ttk.Entry(principal)
-EntradaVida.place(x=10, y=190, width=145)
-
-CATk = tk.StringVar()
-CAToqTk = tk.StringVar()
-CADesTk = tk.StringVar()
-
-VelTk = tk.StringVar()
-TextoVel = tk.Label(principal, text="Velocidad", anchor='w', relief="groove").place(x=320, y=211, width=145)
-EntradaVel = ttk.Entry(principal)
-EntradaVel.place(x=320, y=190, width=145)
-
-DadoGolpeTk = tk.StringVar()
-TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe", anchor='w', relief="groove").place(x=475, y=211, width=145)
-EntradaDadoGolpe = ttk.Entry(principal)
-EntradaDadoGolpe.place(x=475, y=190, width=145)
 
 ListaTk = [NombreTk, EntradaNombre, JugadorTk, EntradaJugador, ClaseTk, EntradaClase, Lv, EntradaLv, RazaTk,
            EntradaRaza, AlineamientoTk, EntradaAlineamiento, DeidadTk, EntradaDeidad, TamanioTk, EntradaTamanio, EdadTk,
