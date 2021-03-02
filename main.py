@@ -1,77 +1,54 @@
 import tkinter as tk
-import math
+# import math
 from tkinter import ttk
 import os
+
+
+# DEBUG:
+
+def gestionar_pulsacion_raton(event):
+    print("Se ha pulsado el ratón en la posición x: {} y:{}".format(event.x, event.y))
 
 
 def winconfig():
     principal.title("Ficha Python")
     principal.geometry("1280x720+200+100")
-    principal.resizable(width="True", height="True")
+    principal.resizable(width="False", height="False")
+    principal.configure(background='blue')
+    principal.bind("<Button-1>", gestionar_pulsacion_raton)
 
 
 def boton():
-    global NombreTk, EntradaNombre, JugadorTk, EntradaJugador, ClaseTk, EntradaClase, Lv, EntradaLv, RazaTk, \
-        EntradaRaza, AlineamientoTk, EntradaAlineamiento, DeidadTk, EntradaDeidad, TamanioTk, EntradaTamanio, EdadTk, \
-        EntradaEdad, SexoTk, EntradaSexo, AlturaTk, EntradaAltura, PesoTk, EntradaPeso, OjosTk, EntradaOjos, \
-        CabelloTk, EntradaCabello, PielTk, EntradaPiel, EXPHTk, EntradaEXPH, CobreTk, EntradaCobre, PlataTk, \
-        EntradaPlata, OroTk, EntradaOro, PlatinoTk, EntradaPlatino, RangosTk, EntradaRangos, VidaTk, EntradaVida, \
-        VelTk, EntradaVel, DadoGolpeTk, EntradaDadoGolpe
-
-    NombreTk.set(EntradaNombre.get())
-    JugadorTk.set(EntradaJugador.get())
-    ClaseTk.set(EntradaClase.get())
-    Lv.set(EntradaLv.get())
-    RazaTk.set(EntradaRaza.get())
-    AlineamientoTk.set(EntradaAlineamiento.get())
-    DeidadTk.set(EntradaDeidad.get())
-    TamanioTk.set(EntradaTamanio.get())
-    EdadTk.set(EntradaEdad.get())
-    SexoTk.set(EntradaSexo.get())
-    AlturaTk.set(EntradaAltura.get())
-    PesoTk.set(EntradaPeso.get())
-    OjosTk.set(EntradaOjos.get())
-    CabelloTk.set(EntradaCabello.get())
-    PielTk.set(EntradaPiel.get())
-    EXPHTk.set(EntradaEXPH.get())
-    CobreTk.set(EntradaCobre.get())
-    PlataTk.set(EntradaPlata.get())
-    OroTk.set(EntradaOro.get())
-    PlatinoTk.set(EntradaPlatino.get())
-    RangosTk.set(EntradaRangos.get())
-    VidaTk.set(EntradaVida.get())
-    VelTk.set(EntradaVel.get())
-    DadoGolpeTk.set(EntradaDadoGolpe.get())
+    global ListaTk
 
     f_list = os.listdir("./")
 
     if "Jugador.txt" in f_list:
-        f = open("Jugador.txt", "w", encoding="utf-8")
+        e = open("Jugador.txt", "w", encoding="utf-8")
     else:
-        f = open("Jugador.txt", "w", encoding="utf-8")
+        e = open("Jugador.txt", "w", encoding="utf-8")
 
-    ListaGuardar = [NombreTk.get(), JugadorTk.get(), ClaseTk.get(), Lv.get(), RazaTk.get(), AlineamientoTk.get(),
-                    DeidadTk.get(), TamanioTk.get(), EdadTk.get(), SexoTk.get(), AlturaTk.get(), PesoTk.get(),
-                    OjosTk.get(),
-                    CabelloTk.get(), PielTk.get(), EXPHTk.get(), CobreTk.get(), PlataTk.get(), OroTk.get(),
-                    PlatinoTk.get(),
-                    RangosTk.get(), VidaTk.get(), VelTk.get(), DadoGolpeTk.get()]
+    for c in range(0, len(ListaTk)):
+        if (c % 2) == 0:
+            ListaTk[c].set(ListaTk[c + 1].get())
+            e.write(ListaTk[c].get() + "\n")
 
-    f.writelines("%s\n" % item for item in ListaGuardar)
-    f.close()
-
-
-def seleccionarRangos():
-    for i in range(0, 48):
-        if ListaRangosAsignados[i].get():
-            ListaRangos[i].append(True)
+    e.close()
+    for n in range(0, 47):
+        if ListaRangosAsignados[n].get():
+            ListaRangos[n].append(True)
         else:
-            ListaRangos[i].append(False)
-        del ListaRangos[i][3]
+            ListaRangos[n].append(False)
+        ListaRangos[n][3] = 0
+
+
+def scroll(event):
+    canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
 
 principal = tk.Tk()
 winconfig()
+principal.bind("<MouseWheel>", scroll)
 
 StatsBase = []
 StatsTotal = []
@@ -91,6 +68,7 @@ f.close()
 # [X][1] - Habilidad
 # [X][2] - Rangos
 # [X][3] - Total
+# [X][4] - Clásea
 
 NombreTk = tk.StringVar()
 TextoNombre = tk.Label(principal, text="Nombre")
@@ -228,10 +206,18 @@ TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe").grid(row=5, column=6)
 EntradaDadoGolpe = ttk.Entry(principal)
 EntradaDadoGolpe.grid(row=6, column=6)
 
+ListaTk = [NombreTk, EntradaNombre, JugadorTk, EntradaJugador, ClaseTk, EntradaClase, Lv, EntradaLv, RazaTk,
+           EntradaRaza, AlineamientoTk, EntradaAlineamiento, DeidadTk, EntradaDeidad, TamanioTk, EntradaTamanio, EdadTk,
+           EntradaEdad, SexoTk, EntradaSexo, AlturaTk, EntradaAltura, PesoTk, EntradaPeso, OjosTk, EntradaOjos,
+           CabelloTk, EntradaCabello, PielTk, EntradaPiel, EXPHTk, EntradaEXPH, CobreTk, EntradaCobre, PlataTk,
+           EntradaPlata, OroTk, EntradaOro, PlatinoTk, EntradaPlatino, RangosTk, EntradaRangos, VidaTk, EntradaVida,
+           VelTk, EntradaVel, DadoGolpeTk, EntradaDadoGolpe]
+
 ListaRangosAsignados = []
 
 container = tk.ttk.Frame(principal)
 canvas = tk.Canvas(container)
+canvas.configure(width=214, height=500)
 scrollbar = tk.ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
 scrollable_frame = tk.ttk.Frame(canvas)
 
@@ -242,19 +228,19 @@ scrollable_frame.bind(
     )
 )
 
-canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+canvas.create_window((0, 0), window=scrollable_frame, anchor="nw", width=500, height=1170)
 canvas.configure(yscrollcommand=scrollbar.set)
 
-for i in range(0, 48):
+for i in range(0, 47):
     ListaRangosAsignados.append(tk.IntVar())
-    tk.ttk.Checkbutton(scrollable_frame, text=ListaRangos[i][0], variable=ListaRangosAsignados[i], onvalue=1,
-                       offvalue=0).pack()
+    tk.Checkbutton(scrollable_frame, text=ListaRangos[i][0], variable=ListaRangosAsignados[i], onvalue=1,
+                   offvalue=0, anchor="w").pack(fill='both')
 
-container.place(x=0, y=180)
+TextoClaseas = tk.Label(principal, text="Habilidades de clase").place(x=1100, y=150)
+
+container.place(x=1050, y=180)
 canvas.pack(side="left", fill="both", expand=True)
-scrollbar.pack(side="right", fill="y")
-
-BotonRangosTk = tk.Button(container, text="Rangos", command=seleccionarRangos).pack(side="bottom")
+scrollbar.place(x=200, y=0, height=500)
 
 BotonTk = tk.Button(principal, text="EL BOTÓN", command=boton).grid(row=8, column=5)
 
