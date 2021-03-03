@@ -1,5 +1,5 @@
 import tkinter as tk
-# import math
+import math
 from tkinter import ttk
 import os
 
@@ -28,8 +28,6 @@ def botonAceptar():
     else:
         e = open("Jugador.txt", "w", encoding="utf-8")
 
-    e.write("%s\n" % DadoGolpeTk.get())
-
     for c in range(0, len(ListaTk)):
         if (c % 2) == 0:
             ListaTk[c].set(ListaTk[c + 1].get())
@@ -41,17 +39,17 @@ def botonAceptar():
 
     for n in range(0, 47):
         if ListaRangosAsignados[n].get():
-            ListaRangos[n].append(True)
+            ListaRangos[n].append("True")
         else:
-            ListaRangos[n].append(False)
+            ListaRangos[n].append("False")
         ListaRangos[n][3] = 0
         rangFile.writelines(
             ListaRangos[n][0] + ',' + ListaRangos[n][1] + ',' + ListaRangos[n][2] + ',' + str(ListaRangos[n][3]) + ',' +
-            str(ListaRangos[n][4]) + "\n")
+            str(ListaRangos[n][4]))
 
     rangFile.close()
     principal.destroy()
-    # open("Abrido.txt", "w", encoding="utf-8").write("1")
+    open("Abrido.txt", "w", encoding="utf-8").write("1")
 
 
 def botonCancelar():
@@ -75,11 +73,50 @@ def boton():
 def scroll(event):
     canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-def callback(selection):
-    global DadoGolpeTk
-    print(selection)
-    DadoGolpeTk.set(selection)
-    print(DadoGolpeTk.get())
+
+def tablar_label(listaText, relief, xIn, yIn, filas, columnas, width, height):
+
+    index = 0
+
+    for fila in range(0, filas):
+
+        for columna in range(0, columnas):
+            tk.Label(fichaWin, text=listaText[index], relief=relief).place(x=xIn, y=yIn, width=width, height=height)
+            xIn += width
+            index += 1
+
+        yIn += height
+        xIn -= width * columnas
+
+
+def tablar_entry(lista, xIn, yIn, filas, columnas, width, height):
+    for fila in range(0, filas):
+
+        lista.append([])
+
+        for columna in range(columnas):
+            lista[fila].append(tk.Entry(fichaWin))
+            lista[fila][columna].place(x=xIn, y=yIn, width=width, height=height)
+            lista[fila][columna].bind("<Return>" and "<Tab>", enter)
+            xIn += width
+
+        yIn += height
+        xIn -= width * columnas
+
+def enter(event=None):
+    for fila in range(0, 6):
+        if listaStats[fila][0].get().isnumeric() and listaStats[fila][1].get().isnumeric() and listaStats[fila][2]\
+                .get().isnumeric:
+            listaStats[fila][3].delete(0, "end")
+            listaStats[fila][3].insert(0, int(listaStats[fila][0].get())+int(listaStats[fila][1].get())+int(listaStats[fila][2].get()))
+            listaStats[fila][4].delete(0, "end")
+            listaStats[fila][4].insert(0, math.floor((int(listaStats[fila][3].get())-10)/2))
+
+#  def callback(selection):
+#     global DadoGolpeTk
+#     print(selection)
+#     DadoGolpeTk.set(selection)
+#     print(DadoGolpeTk.get())
 
 
 Abrido = open("Abrido.txt", "r", encoding="utf-8")
@@ -213,12 +250,9 @@ if Abrido.readline() == "0":
     DadoGolpeTk = tk.StringVar()
     TextoDadoGolpe = tk.Label(principal, text="Dado de Golpe", anchor='w', relief="groove").place(x=475, y=211,
                                                                                                   width=145)
-    EntradaDadoGolpe = ttk.Entry(principal)
-    # EntradaDadoGolpe.place(x=475, y=190, width=145)
-
     ListaDados = []
-    DadoGolpeTk.set("1d4")
-    opt = tk.OptionMenu(principal, DadoGolpeTk, "1d4", "1d6", "1d8", "1d10", "1d12", command=callback)
+    DadoGolpeTk.set("d4")
+    opt = tk.OptionMenu(principal, DadoGolpeTk, "d4", "d6", "d8", "d10", "d12")
     opt.configure(width=145)
     opt.place(x=475, y=190, width=145)
 
@@ -257,7 +291,8 @@ if Abrido.readline() == "0":
     ListaTk = [NombreTk, EntradaNombre, JugadorTk, EntradaJugador, ClaseTk, EntradaClase, Lv, EntradaLv, RazaTk,
                EntradaRaza, AlineamientoTk, EntradaAlineamiento, DeidadTk, EntradaDeidad, TamanioTk, EntradaTamanio,
                EdadTk, EntradaEdad, SexoTk, EntradaSexo, AlturaTk, EntradaAltura, PesoTk, EntradaPeso, OjosTk,
-               EntradaOjos, CabelloTk, EntradaCabello, PielTk, EntradaPiel, VidaTk, EntradaVida, RangosTk,
+               EntradaOjos, CabelloTk, EntradaCabello, PielTk, EntradaPiel, DadoGolpeTk, DadoGolpeTk, VidaTk,
+               EntradaVida, RangosTk,
                EntradaRangos, VelTk, EntradaVel, CobreTk, EntradaCobre, PlataTk,
                EntradaPlata, OroTk, EntradaOro, PlatinoTk, EntradaPlatino]
 
@@ -339,22 +374,128 @@ if Abrido.readline() == "0":
 
 # Aquí comiensa la programasión del de verdá
 
-# fichaWin = tk.Tk()
-# winconfig(fichaWin, nombre="Ficha 3.5", dimensiones="1280x720+200+100", resize="True")
-#
-# StatsFile = open("Jugador.txt", "r", encoding="utf-8")
-#
-# StatsFile.close()
-#
-# NombreEntry = tk.Entry(fichaWin)
-# NombreEntry.place(x=10, y=10, width=100)
-# NombreEntry.set(ListaTk)
-# NombreDefLabel = tk.Label(fichaWin, text="Nombre", anchor='w', relief="groove")
-# NombreDefLabel.place(x=10, y=31, width=100)
-#
-# JugadorEntry = tk.Entry(fichaWin)
-# NombreEntry.place(x=10, y=10, width=100)
-# NombreDefLabel = tk.Label(fichaWin, text="Nombre", anchor='w', relief="groove")
-# NombreDefLabel.place(x=10, y=31, width=100)
-#
-# fichaWin.mainloop()
+fichaWin = tk.Tk()
+winconfig(fichaWin, nombre="Ficha 3.5", dimensiones="1280x720+200+100", resize="True")
+
+ListaTk = []
+
+StatsFile = open("Jugador.txt", "r", encoding="utf-8")
+linea = []
+num_lineas = 0
+
+for line in StatsFile:
+    ListaTk.append(line.replace("\n", ""))
+
+StatsFile.close()
+
+NombreEntry = tk.Entry(fichaWin)
+NombreEntry.place(x=10, y=10, width=300)
+NombreEntry.insert(0, ListaTk[0])
+NombreDefLabel = tk.Label(fichaWin, text="Nombre", anchor='w', relief="groove")
+NombreDefLabel.place(x=10, y=31, width=300)
+
+JugadorEntry = tk.Entry(fichaWin)
+JugadorEntry.place(x=320, y=10, width=300)
+JugadorEntry.insert(0, ListaTk[1])
+JugadorDefLabel = tk.Label(fichaWin, text="Jugador", anchor='w', relief="groove")
+JugadorDefLabel.place(x=320, y=31, width=300)
+
+ClaseEntry = tk.Entry(fichaWin)
+ClaseEntry.place(x=10, y=70, width=200)
+ClaseEntry.insert(0, ListaTk[2])
+ClaseDefLabel = tk.Label(fichaWin, text="Clase", anchor='w', relief="groove")
+ClaseDefLabel.place(x=10, y=91, width=200)
+
+NivelEntry = tk.Entry(fichaWin)
+NivelEntry.place(x=220, y=70, width=90)
+NivelEntry.insert(0, ListaTk[3])
+NivelDefLabel = tk.Label(fichaWin, text="Nivel", anchor='w', relief="groove")
+NivelDefLabel.place(x=220, y=91, width=90)
+
+RazaEntry = tk.Entry(fichaWin)
+RazaEntry.place(x=320, y=70, width=90)
+RazaEntry.insert(0, ListaTk[4])
+RazaDefLabel = tk.Label(fichaWin, text="Raza", anchor='w', relief="groove")
+RazaDefLabel.place(x=320, y=91, width=90)
+
+AlineamientoEntry = tk.Entry(fichaWin)
+AlineamientoEntry.place(x=420, y=70, width=100)
+AlineamientoEntry.insert(0, ListaTk[5])
+AlineamientoDefLabel = tk.Label(fichaWin, text="Alineamiento", anchor='w', relief="groove")
+AlineamientoDefLabel.place(x=420, y=91, width=100)
+
+DeidadEntry = tk.Entry(fichaWin)
+DeidadEntry.place(x=530, y=70, width=90)
+DeidadEntry.insert(0, ListaTk[6])
+DeidadDefLabel = tk.Label(fichaWin, text="Deidad", anchor='w', relief="groove")
+DeidadDefLabel.place(x=530, y=91, width=90)
+
+TamanoEntry = tk.Entry(fichaWin)
+TamanoEntry.place(x=10, y=130, width=70)
+TamanoEntry.insert(0, ListaTk[7])
+TamanoDefLabel = tk.Label(fichaWin, text="Tamano", anchor='w', relief="groove")
+TamanoDefLabel.place(x=10, y=151, width=70)
+
+EdadEntry = tk.Entry(fichaWin)
+EdadEntry.place(x=90, y=130, width=50)
+EdadEntry.insert(0, ListaTk[8])
+EdadDefLabel = tk.Label(fichaWin, text="Edad", anchor='w', relief="groove")
+EdadDefLabel.place(x=90, y=151, width=50)
+
+SexoEntry = tk.Entry(fichaWin)
+SexoEntry.place(x=150, y=130, width=60)
+SexoEntry.insert(0, ListaTk[9])
+SexoDefLabel = tk.Label(fichaWin, text="Sexo", anchor='w', relief="groove")
+SexoDefLabel.place(x=150, y=151, width=60)
+
+AlturaEntry = tk.Entry(fichaWin)
+AlturaEntry.place(x=220, y=130, width=90)
+AlturaEntry.insert(0, ListaTk[10])
+AlturaDefLabel = tk.Label(fichaWin, text="Altura", anchor='w', relief="groove")
+AlturaDefLabel.place(x=220, y=151, width=90)
+
+PesoEntry = tk.Entry(fichaWin)
+PesoEntry.place(x=320, y=130, width=60)
+PesoEntry.insert(0, ListaTk[11])
+PesoDefLabel = tk.Label(fichaWin, text="Peso", anchor='w', relief="groove")
+PesoDefLabel.place(x=320, y=151, width=60)
+
+OjosEntry = tk.Entry(fichaWin)
+OjosEntry.place(x=390, y=130, width=70)
+OjosEntry.insert(0, ListaTk[12])
+OjosDefLabel = tk.Label(fichaWin, text="Ojos", anchor='w', relief="groove")
+OjosDefLabel.place(x=390, y=151, width=70)
+
+CabelloEntry = tk.Entry(fichaWin)
+CabelloEntry.place(x=470, y=130, width=70)
+CabelloEntry.insert(0, ListaTk[13])
+CabelloDefLabel = tk.Label(fichaWin, text="Cabello", anchor='w', relief="groove")
+CabelloDefLabel.place(x=470, y=151, width=70)
+
+PielEntry = tk.Entry(fichaWin)
+PielEntry.place(x=550, y=130, width=70)
+PielEntry.insert(0, ListaTk[14])
+PielDefLabel = tk.Label(fichaWin, text="Piel", anchor='w', relief="groove")
+PielDefLabel.place(x=550, y=151, width=70)
+
+LvGPLabel = tk.Label(fichaWin, text="Nivel", relief="groove")
+LvGPLabel.place(x=10, y=190, width=60)
+TiradasGP = tk.Label(fichaWin, text="Tiradas GP", relief="groove")
+TiradasGP.place(x=10, y=210, width=60)
+
+listaLabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+tablar_label(listaText=listaLabels, relief="groove", xIn=70, yIn=190, width=20, height=20, columnas=20, filas=1)
+
+listaPG = []
+tablar_entry(listaPG, xIn=70, yIn=210, width=20, height=20, columnas=20, filas=1)
+
+listaLabels = ["Nombre Caract.", "FUE", "DES", "CON", "INT", "SAB", "CAR"]
+tablar_label(listaText=listaLabels, relief="groove", xIn=10, yIn=240, width=100, height=20, columnas=1, filas=7)
+
+listaLabels = ["Caract. Base", "Bonus Extra", "Bonus Temp.", "Caract. Total", "Mod. Caract."]
+tablar_label(listaText=listaLabels, relief="groove", xIn=110, yIn=240, width=100, height=20, columnas=5, filas=1)
+
+listaStats = []
+tablar_entry(listaStats, xIn=110, yIn=260, width=100, height=20, columnas=5, filas=6)
+
+fichaWin.mainloop()
