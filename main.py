@@ -75,7 +75,6 @@ def scroll(event):
 
 
 def tablar_label(listaText, relief, xIn, yIn, filas, columnas, width, height):
-
     index = 0
 
     for fila in range(0, filas):
@@ -89,28 +88,49 @@ def tablar_label(listaText, relief, xIn, yIn, filas, columnas, width, height):
         xIn -= width * columnas
 
 
+def tablar_label_mod(lista, relief, xIn, yIn, filas, columnas, width, height):
+
+    for fila in range(0, filas):
+
+        for columna in range(0, columnas):
+            lista[fila][columna].append(tk.Label(fichaWin, text=lista[fila][columna][0].get(), relief=relief))
+            lista[fila][columna][1].place(x=xIn, y=yIn, width=width, height=height)
+            xIn += width
+
+        yIn += height
+        xIn -= width * columnas
+
+
 def tablar_entry(lista, xIn, yIn, filas, columnas, width, height):
     for fila in range(0, filas):
 
         lista.append([])
 
         for columna in range(columnas):
-            lista[fila].append(tk.Entry(fichaWin))
-            lista[fila][columna].place(x=xIn, y=yIn, width=width, height=height)
-            lista[fila][columna].bind("<Return>" and "<Tab>", enter)
+            lista[fila].append([])
+            lista[fila][columna].append(tk.IntVar())
+
+            lista[fila][columna].append(tk.Entry(fichaWin, textvariable=lista[fila][columna][0]))
+            lista[fila][columna][1].place(x=xIn, y=yIn, width=width, height=height)
+
             xIn += width
 
         yIn += height
         xIn -= width * columnas
 
+
 def enter(event=None):
-    for fila in range(0, 6):
-        if listaStats[fila][0].get().isnumeric() and listaStats[fila][1].get().isnumeric() and listaStats[fila][2]\
-                .get().isnumeric:
-            listaStats[fila][3].delete(0, "end")
-            listaStats[fila][3].insert(0, int(listaStats[fila][0].get())+int(listaStats[fila][1].get())+int(listaStats[fila][2].get()))
-            listaStats[fila][4].delete(0, "end")
-            listaStats[fila][4].insert(0, math.floor((int(listaStats[fila][3].get())-10)/2))
+
+    for fila in range(len(listaCaractTotal)):
+        for columna in range(len(listaCaractTotal[fila])):
+            listaCaractTotal[fila][columna][0].set(listaStats[fila][0][0].get() + listaStats[fila][1][0].get() + listaStats[fila][2][0].get())
+            listaCaractTotal[fila][columna][1].config(text=listaCaractTotal[fila][columna][0].get())
+
+    for i in range(len(listaCaractBonus)):
+        for j in range(len(listaCaractBonus[i])):
+            listaCaractBonus[i][j][0].set(math.floor(listaCaractTotal[i][j][0].get() - 10) / 2)
+            listaCaractBonus[i][j][1].config(text=listaCaractBonus[i][j][0].get())
+
 
 #  def callback(selection):
 #     global DadoGolpeTk
@@ -375,6 +395,7 @@ if Abrido.readline() == "0":
 # Aquí comiensa la programasión del de verdá
 
 fichaWin = tk.Tk()
+fichaWin.bind("<Return>", enter)
 winconfig(fichaWin, nombre="Ficha 3.5", dimensiones="1280x720+200+100", resize="True")
 
 ListaTk = []
@@ -496,6 +517,26 @@ listaLabels = ["Caract. Base", "Bonus Extra", "Bonus Temp.", "Caract. Total", "M
 tablar_label(listaText=listaLabels, relief="groove", xIn=110, yIn=240, width=100, height=20, columnas=5, filas=1)
 
 listaStats = []
-tablar_entry(listaStats, xIn=110, yIn=260, width=100, height=20, columnas=5, filas=6)
+tablar_entry(listaStats, xIn=110, yIn=260, width=100, height=20, columnas=3, filas=6)
+
+listaCaractTotal = []
+for i in range(0, 6):
+    listaCaractTotal.append([])
+    for j in range(0, 1):
+        listaCaractTotal[i].append([])
+        listaCaractTotal[i][j].append(tk.IntVar())
+        listaCaractTotal[i][j][0].set(listaStats[i][0][0].get()+listaStats[i][1][0].get()+listaStats[i][0][0].get())
+
+tablar_label_mod(lista=listaCaractTotal, relief="groove", xIn=410, yIn=260, width=100, height=20, columnas=1, filas=6)
+
+listaCaractBonus = []
+for i in range(0, 6):
+    listaCaractBonus.append([])
+    for j in range(0, 1):
+        listaCaractBonus[i].append([])
+        listaCaractBonus[i][j].append(tk.IntVar())
+        listaCaractBonus[i][j][0].set(math.floor(listaCaractTotal[i][j][0].get()-10)/2)
+
+tablar_label_mod(lista=listaCaractBonus, relief="groove", xIn=510, yIn=260, width=100, height=20, columnas=1, filas=6)
 
 fichaWin.mainloop()
