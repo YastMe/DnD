@@ -123,7 +123,8 @@ def enter(event=None):
 
     for fila in range(len(listaCaractTotal)):
         for columna in range(len(listaCaractTotal[fila])):
-            listaCaractTotal[fila][columna][0].set(listaStats[fila][0][0].get() + listaStats[fila][1][0].get() + listaStats[fila][2][0].get())
+            listaCaractTotal[fila][columna][0].set(
+                listaStats[fila][0][0].get() + listaStats[fila][1][0].get() + listaStats[fila][2][0].get())
             listaCaractTotal[fila][columna][1].config(text=listaCaractTotal[fila][columna][0].get())
 
     for i in range(len(listaCaractBonus)):
@@ -538,5 +539,6 @@ for i in range(0, 6):
         listaCaractBonus[i][j][0].set(math.floor(listaCaractTotal[i][j][0].get()-10)/2)
 
 tablar_label_mod(lista=listaCaractBonus, relief="groove", xIn=510, yIn=260, width=100, height=20, columnas=1, filas=6)
+
 
 fichaWin.mainloop()
