@@ -36,5 +36,17 @@ class Salvacion:
 
     # Getters de valores
 
+    def getsalvacionBase(self):
+        return self.__salvacionBase
+
+    def getbonusCaract(self):
+        return self.__bonusCaract
+
+    def getbonusExtra(self):
+        return self.bonusExtra
+
+    def getbonusTemp(self):
+        return self.bonusTemp
+
     def getcaractTotal(self):
         print(self.__caractTotal)

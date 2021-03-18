@@ -10,10 +10,10 @@ class Atributo:
 
 # Funciones de la clase
 
-    def __init__(self, name): # Inicia el objeto
+    def __init__(self, name):
         self.name = name
 
-    def __del__(self): # Destruye el objeto
+    def __del__(self):
         pass
 
     # Setters de valores
@@ -35,8 +35,17 @@ class Atributo:
 
     # Getters de valores
 
+    def getcaractBase(self):
+        return self.caractBase
+
+    def getbonusExtra(self):
+        return self.bonusExtra
+
+    def getbonusTemp(self):
+        return self.bonusTemp
+
     def getcaractTotal(self):
-        print(self.__caractTotal)
+        return self.__caractTotal
 
     def getmodificador(self):
-        print(self.__modificador)
+        return self.__modificador
